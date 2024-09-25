@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Reflection.Metadata.Ecma335;
+using WhiteVilla.Application.Common.Interfaces;
 using WhiteVilla.Domain.Entities;
 using WhiteVilla.Infrastructure.Data;
 
@@ -9,16 +10,16 @@ namespace WhiteVilla.Web.Controllers
 {
     public class VillaController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IVillaRepository _villaRepo;
 
-        public VillaController(ApplicationDbContext db)
+        public VillaController(IVillaRepository villaRepo)
         {
-            _db = db;
+            _villaRepo = villaRepo;
             
         }
         public IActionResult Index()
         {
-            var villas = _db.Villas.ToList();
+            var villas = _villaRepo.GetAll();
             return View(villas);
 
         }
@@ -37,18 +38,18 @@ namespace WhiteVilla.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-                _db.Villas.Add(obj);
-                _db.SaveChanges();
+                _villaRepo.Add(obj);
+                _villaRepo.Save();
                 TempData["success"] = "Successfully Created";
 
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             return View();
         }
 
         public IActionResult Update(int villaId)
         {
-            Villa? obj = _db.Villas.FirstOrDefault(u=>u.Id==villaId);
+            Villa? obj = _villaRepo.Get(u=>u.Id==villaId);
             if(obj==null)
             {
                 return RedirectToAction("Error", "Home");
@@ -61,17 +62,17 @@ namespace WhiteVilla.Web.Controllers
            
             if (ModelState.IsValid && obj.Id>0)
             {
-                _db.Villas.Update(obj);
-                _db.SaveChanges();
+                _villaRepo.Update(obj);
+                _villaRepo.Save();
                 TempData["success"] = "Successfully Updated";
 
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             return View();
         }
         public IActionResult Delete(int villaId)
         {
-            Villa? obj = _db.Villas.FirstOrDefault(u => u.Id == villaId);
+            Villa? obj = _villaRepo.Get(u => u.Id == villaId);
             if (obj is null)
             {
                 return RedirectToAction("Error", "Home");
@@ -81,14 +82,14 @@ namespace WhiteVilla.Web.Controllers
         [HttpPost]
         public IActionResult Delete(Villa obj)
         {
-            Villa? objFromDb = _db.Villas.FirstOrDefault(u => u.Id == obj.Id);
+            Villa? objFromDb = _villaRepo.Get(u => u.Id == obj.Id);
 
             if (objFromDb is not null)
             {
-                _db.Villas.Remove(objFromDb);
-                _db.SaveChanges();
+                _villaRepo.Remove(objFromDb);
+                _villaRepo.Save();
                 TempData["success"] = "Successfully Deleted";
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             TempData["error"] = "Can't Be Deleted";
 

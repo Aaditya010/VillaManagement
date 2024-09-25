@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WhiteVilla.Application\WhiteVilla.Application.csproj" />
     <ProjectReference Include="..\WhiteVilla.Domain\WhiteVilla.Domain.csproj" />
   </ItemGroup>
 
