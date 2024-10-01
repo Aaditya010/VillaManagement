@@ -11,11 +11,11 @@ using WhiteVilla.Infrastructure.Data;
 
 namespace WhiteVilla.Infrastructure.Repository
 {
-    public class VillaRepository : IVillaRepository
+    public class VillaRepository :Repository<Villa> ,IVillaRepository
     {
         private readonly ApplicationDbContext _db;
 
-        public VillaRepository(ApplicationDbContext db)
+        public VillaRepository(ApplicationDbContext db):base(db) 
         {
             _db = db;
 
@@ -23,58 +23,6 @@ namespace WhiteVilla.Infrastructure.Repository
         public void Add(Villa entity)
         {
            _db.Add(entity);
-        }
-
-        public Villa Get(Expression<Func<Villa, bool>>? filter, string? includeProperties = null)
-        {
-            IQueryable<Villa> query = _db.Set<Villa>();
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            if (!string.IsNullOrEmpty(includeProperties))
-            {
-                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(includeProp.Trim());
-                }
-            }
-
-            return query.FirstOrDefault();
-
-        }
-
-        public IEnumerable<Villa> GetAll(Expression<Func<Villa, bool>>? filter = null, string? includeProperties = null)
-        {
-            IQueryable<Villa> query = _db.Set<Villa>();
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            if (!string.IsNullOrEmpty(includeProperties))
-            {
-                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(includeProp.Trim());
-                }
-            }
-
-            return query.ToList(); 
-        }
-
-
-        public void Remove(Villa entity)
-        {
-            _db.Remove(entity);
-        }
-
-        public void Save()
-        {
-            _db.SaveChanges();
         }
 
         public void Update(Villa entity)

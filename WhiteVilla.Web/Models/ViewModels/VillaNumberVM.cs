@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+﻿
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WhiteVilla.Domain.Entities;
 
@@ -9,6 +10,6 @@ namespace WhiteVilla.Web.Models.ViewModels
         public VillaNumber? VillaNumber { get; set; }
 
         [ValidateNever]
-        public IEnumerable <SelectListItem>? VillaList { get; set; }
+        public IEnumerable<SelectListItem>? VillaList { get; set; }
     }
 }
